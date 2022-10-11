@@ -1,6 +1,18 @@
 #!/usr/bin/env python     # "here is a python program", only needed when working in unix env
 # coding: utf-8           # what encoding does it use
 
+"""
+This module fetches data from insurance.csv file and run simple LogisticRegression pipeline on it,
+result indicates whether a customer will make a motor claim.
+"""
+
+# Module level dunder names
+__author__ = "K-Monty"
+__license__ = "MIT"
+__version__ = "0.1.0"
+__maintainer__ = "K-Monty"
+__email__ = "kmgoh1995@gmail.com"
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -19,13 +31,23 @@ from sklearn.metrics import confusion_matrix
 # pipeline code: https://stats.stackexchange.com/questions/402470/how-can-i-use-scaling-and-log-transforming-together
 
 
-class InsuranceData:
+class InsuranceDataWrapper:
     """
     Simply a container/wrapper for insuranve_data.csv, to fetch data easier
+
+    Parameters
+    ----------
+    my_path: string
+        path of the insurance data (insurance_data.csv) 
+
+    Attributes
+    ----------
+    self.df: <class 'pandas.core.frame.DataFrame'>
     """
+
     def __init__(self, my_path):
         self.path = my_path
-        self.df = pd.read_csv(r"{}".format(self.path), index_col = 0)
+        self.df = pd.read_csv(r"{}".format(self.path), index_col=0)
 
     def fetch(self):
         return self.df
@@ -35,18 +57,28 @@ class MyPipeline:
     """
     Simple pipeline running transformer, scaler and regressor on X_train and y_train
     Note: only use this pipeline when applying same transforner & scaler on all columns in X_train
+
+    Parameters
+    ----------
+    transformer: function
+    scaler: function
+    regressor: function
     """
+
     def __init__(self, transformer, scaler, regressor):
         self.transformer = transformer
         self.scaler = scaler
         self.regressor = regressor
 
     def run(self, X_train, y_train):
-        pipe = Pipeline(steps=[
-            ('transformer', self.transformer), 
-            ('scaler', self.scaler), 
-            ('regressor', self.regressor)
-            ], memory='sklearn_tmp_memory')
+        pipe = Pipeline(
+            steps=[
+                ("transformer", self.transformer),
+                ("scaler", self.scaler),
+                ("regressor", self.regressor),
+            ],
+            memory="sklearn_tmp_memory",
+        )
         pipe.fit(X_train, y_train)
         return pipe
 
@@ -54,7 +86,19 @@ class MyPipeline:
 class EvalParams:
     """
     Calculate evaluation parameters (recall, precision) when given a confusion matrix
+
+    Parameters
+    ----------
+    my_confusion_matrix: array
+        2 x 2 confusion matrix
+
+    Attributes
+    ----------
+    self.tn, self.fp, self.fn, self.tp: integer
+    self.recall: integer
+    self.precision: integer
     """
+
     def __init__(self, my_confusion_matrix):
         self.matrix = my_confusion_matrix
         self.tn, self.fp, self.fn, self.tp = self._confusion_matrix_to_conditions()
@@ -66,10 +110,10 @@ class EvalParams:
         return tn, fp, fn, tp
 
     def _recall(self):
-        return self.tp/(self.tp + self.fp)
+        return self.tp / (self.tp + self.fp)
 
     def _precision(self):
-        return self.tp/(self.tp + self.fn)
+        return self.tp / (self.tp + self.fn)
 
 
 def correlation_test(input_df, method="pearson"):
@@ -99,12 +143,19 @@ def log_transform(x):
 
 
 if __name__ == "__main__":
-    df = InsuranceData(r"C:\Users\redal\Code\bootcamp_ppi\python_class_with_Kristian\insurance_data.csv").fetch()
-    any_motor_claim_boolean = df['amount_claims_motor'] > 0.0
+    df = InsuranceDataWrapper(
+        r"C:\Users\redal\Code\bootcamp_ppi\python_class_with_Kristian\insurance_data.csv"
+    ).fetch()
+    any_motor_claim_boolean = df["amount_claims_motor"] > 0.0
     df["any_motor_claims"] = any_motor_claim_boolean.astype(int)
 
-    selected_xcol = ['age_client', 'Client_Seniority', 'Car_2ndDriver_M', 'annual_payment_motor']
-    selected_ycol = ['any_motor_claims']
+    selected_xcol = [
+        "age_client",
+        "Client_Seniority",
+        "Car_2ndDriver_M",
+        "annual_payment_motor",
+    ]
+    selected_ycol = ["any_motor_claims"]
     X = df[selected_xcol]
     y = df[selected_ycol]
 
