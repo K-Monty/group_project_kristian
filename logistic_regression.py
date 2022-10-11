@@ -36,7 +36,7 @@ from sklearn.metrics import confusion_matrix
 
 class InsuranceDataWrapper:
     """
-    Simply a container/wrapper to fetch data from fastapi. 
+    Simply a container/wrapper to fetch data from fastapi.
     NEED TO RUN API SERVER FIRST BEFORE RUNNING THIS!!!
 
 
@@ -49,7 +49,7 @@ class InsuranceDataWrapper:
         self.url_main = "http://localhost:8000/"
 
     def fetch(self):
-        nchunks = requests.get(self.url_main+"n_chunks").json()["chunks"]
+        nchunks = requests.get(self.url_main + "n_chunks").json()["chunks"]
         mega_json = []
 
         for i in range(nchunks):
@@ -157,14 +157,14 @@ def log_transform(x):
 if __name__ == "__main__":
     df = InsuranceDataWrapper().fetch()
 
-    any_motor_claim_boolean = df["Claims1"] > 0.0     # Claims1 is amount of motor claims
+    any_motor_claim_boolean = df["Claims1"] > 0.0  # Claims1 is amount of motor claims
     df["any_motor_claims"] = any_motor_claim_boolean.astype(int)
 
     selected_xcol = [
         "Age_client",
         "Client_Seniority",
         "Car_2ndDriver_M",
-        "Policy_PaymentMethodA",    #"annual_payment_motor",
+        "Policy_PaymentMethodA",  # "annual_payment_motor",
     ]
     selected_ycol = ["any_motor_claims"]
     X = df[selected_xcol]
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     # the original data is very imbalanced: only very few people make claims.
     # TODO: very little sample in minor class! maybe oversampling instead of undersampling???
     X_new, y_new = nearmiss_undersampling(X_temp, y_temp)
-    
+
     counter_after_undersampling = Counter(y_new)
     print("Counter after undersampling: {}".format(counter_after_undersampling))
 
