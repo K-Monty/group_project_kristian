@@ -14,3 +14,4 @@ short = short.replace("\\", "")
 
 df = pd.read_json(short, orient="records")
 print(df.head())
+print(df.shape)
