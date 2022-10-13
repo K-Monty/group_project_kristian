@@ -3,14 +3,16 @@ import numpy as np
 import requests
 from sklearn import linear_model
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
 
 
-url = "http://127.0.0.1:8000/n_chunks"
-
+url = "http://127.0.0.1:8000/"
+df_bunker = []
 def import_data(url):
-    response = requests.get(url)
-    for i in range(response.json()["chunks"]):
-        url = "http://127.0.0.1:8000/chunk/3"
+    response = requests.get(url + "n_chunks")
+    n_chunks = response.json()["chunks"]
+    for i in range(n_chunks):
+        response = requests.get(url + "chunk/" + str(i))
         json_text = response.text
         short = json_text[1:-1]
         short = short.replace("\\", "")
@@ -40,6 +42,7 @@ def train(df):
     clf = linear_model.TweedieRegressor()
     clf.fit(X_train, y_train)
 
-    print("Coef:", clf.coef_)
-    print("Intercept:", clf.intercept_)
-
+    return [clf.coef_,
+            clf.intercept_,
+            clf.score(X_train, y_train),
+            clf.score(X_test, y_test)]
