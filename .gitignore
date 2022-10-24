@@ -130,3 +130,6 @@ dmypy.json
 
 # where the pipeline job is stored
 sklearn_tmp_memory/
+
+mlruns/
+*.pickle
