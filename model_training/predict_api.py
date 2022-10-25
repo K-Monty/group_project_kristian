@@ -2,7 +2,7 @@
 
 """
 run it with:
-    uvicorn prediction_server:app --reload
+    uvicorn prediction_api:app --reload
 """
 import pickle
 from fastapi import FastAPI
