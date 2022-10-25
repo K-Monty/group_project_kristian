@@ -24,7 +24,7 @@ def fetch_df(rewrite=False) -> pd.DataFrame:
     data_pickle_path = my_const.DATA_PICKLE_PATH
     if not os.path.exists(data_pickle_path) or rewrite == True:
         df = my_func.InsuranceDataAPI("http://localhost:8000/").fetch_df()
-        with open(data_pickle_path, 'wb') as fh:
+        with open(data_pickle_path, "wb") as fh:
             pickle.dump(df, fh)
     else:
         df = pickle.load(open(data_pickle_path, "rb"))
@@ -44,15 +44,23 @@ def filter_df(df: pd.DataFrame) -> Union[pd.DataFrame, list]:
         "Policy_PaymentMethodA",  # "annual_payment_motor",
     ]
     selected_ycol = ["any_motor_claims"]
-    
+
     X = df[selected_xcol]
     y = df[selected_ycol]
-    
+
     return X, list(np.array(y).reshape(1, -1)[0])
 
 
-def train_model_pipeline(X_train: pd.DataFrame, y_train: list, transformer: FunctionType, scaler: FunctionType, regressor: FunctionType) -> Pipeline:
-    pipeline = my_func.MyMLPipeline(transformer, scaler, regressor).run(X_train, y_train)
+def train_model_pipeline(
+    X_train: pd.DataFrame,
+    y_train: list,
+    transformer: FunctionType,
+    scaler: FunctionType,
+    regressor: FunctionType,
+) -> Pipeline:
+    pipeline = my_func.MyMLPipeline(transformer, scaler, regressor).run(
+        X_train, y_train
+    )
     return pipeline
 
 
@@ -88,4 +96,3 @@ if __name__ == "__main__":
     pickle.dump(model, open(my_const.MODEL_PICKLE_PATH, "wb"))
 
     evaluate_model(X_test, y_test, model)
-

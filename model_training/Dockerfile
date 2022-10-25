@@ -3,6 +3,7 @@ FROM python:3.9
 WORKDIR /app
 
 COPY requirements.txt /app/
+COPY *.pickle /app/
 RUN python -m pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 

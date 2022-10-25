@@ -128,7 +128,7 @@ def split_train_test_hash(
     X: pd.DataFrame, y: list
 ) -> Union[pd.DataFrame, list, pd.DataFrame, list]:
     # hash bucket value 1 to 4 goes to training set
-    # hash bucket value 0 goes to test set 
+    # hash bucket value 0 goes to test set
     hash_bucket_list = []
     y_train = []
     y_test = []
@@ -148,7 +148,7 @@ def split_train_test_hash(
             y_test.append(mybool)
         else:
             y_train.append(mybool)
-    X_train = X[X["hash_bucket"] != 0]        
+    X_train = X[X["hash_bucket"] != 0]
     X_test = X[X["hash_bucket"] == 0]
 
     # drop hash_bucket from df

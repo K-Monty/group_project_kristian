@@ -13,7 +13,6 @@ from pydantic import BaseModel
 import constants as my_const
 
 
-# TODO: import a list of json into fastapi
 # https://stackoverflow.com/questions/71845425/fastapi-array-of-json-in-request-body-for-machine-learning-prediction
 # TODO: convert yes or no into 0. or 1. before feed into /predict
 # TODO: raw data needs to go through same transform etc
@@ -40,16 +39,3 @@ def predict(item: Item):
     # user_input_data = np.array([item.age, item.client_seniority, item.second_driver, item.annual_payment_motor])
     result = model.predict(item).tolist()[0]
     return {"Model Prediction": result}
-
-
-# THIS RUNS FINE!
-if __name__ == "__main__":
-    print(my_const.MODEL_PICKLE_PATH)
-    model = pickle.load(open(my_const.MODEL_PICKLE_PATH, "rb"))
-    item = [30, 4.2, 0, 0]
-    item = pd.DataFrame([jsonable_encoder(item)])
-    result = model.predict(item).tolist()[0]
-    print(result)
-
-
-   
